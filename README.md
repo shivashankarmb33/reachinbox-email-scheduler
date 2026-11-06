@@ -255,18 +255,18 @@ npm run test
 ```
 
 Verified test coverage:
-- ✅ `tests/validation.test.ts`: Recipient validation, UUID checks, non-negative delays.
-- ✅ `tests/crypto.test.ts`: AES-256-GCM token encryption and tampering rejection.
-- ✅ `tests/rateLimiter.test.ts`: Hourly window and next-hour millisecond calculation.
-- ✅ `tests/health.test.ts`: Express API health endpoints.
-- ✅ `tests/ethereal.test.ts`: Live Ethereal SMTP test email dispatch and preview URL extraction.
+- `tests/validation.test.ts`: Recipient validation, UUID checks, non-negative delays.
+- `tests/crypto.test.ts`: AES-256-GCM token encryption and tampering rejection.
+- `tests/rateLimiter.test.ts`: Hourly window and next-hour millisecond calculation.
+- `tests/health.test.ts`: Express API health endpoints.
+- `tests/ethereal.test.ts`: Live Ethereal SMTP test email dispatch and preview URL extraction.
 
 ---
 
 ## Live Endpoints
 
-- **Frontend**: [http://localhost:5173](http://localhost:5173)
-- **Backend API**: [http://localhost:5000](http://localhost:5000)
-- **API Health**: [http://localhost:5000/api/health](http://localhost:5000/api/health)
-- **Bull Board**: [http://localhost:5000/admin/queues](http://localhost:5000/admin/queues)
+- **Frontend**:https://reachinbox-frontend-1ri7.onrender.com
+- **Backend API**:https://reachinbox-backend-5635.onrender.com
+- **API Health**: https://reachinbox-backend-5635.onrender.com/health?utm_source=chatgpt.com
+- **Bull Board**: https://reachinbox-backend-5635.onrender.com/admin/queues?utm_source=chatgpt.com
 
