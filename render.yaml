@@ -21,6 +21,8 @@ services:
         source: /*
         destination: /index.html
     envVars:
+      - key: NODE_VERSION
+        value: 20.19.2
       # Vite compiles environment variables at build-time
       - key: VITE_API_URL
         value: https://reachinbox-backend.onrender.com
@@ -33,10 +35,12 @@ services:
     runtime: node
     plan: free # Free tier compute (512 MB RAM, spins down on 15 mins of inactivity)
     rootDir: backend
-    buildCommand: npm install && npx prisma generate && npm run build && npx prisma migrate deploy
+    buildCommand: npm install --include=dev && npx prisma generate && npm run build && npx prisma migrate deploy
     startCommand: npm start
     healthCheckPath: /health
     envVars:
+      - key: NODE_VERSION
+        value: 20.19.2
       - key: NODE_ENV
         value: production
       - key: PORT

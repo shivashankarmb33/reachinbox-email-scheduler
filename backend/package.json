@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "ReachInbox Email Scheduler Backend API & BullMQ Worker",
   "main": "dist/server.js",
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "dev:worker": "tsx watch src/workers/email.worker.ts",
@@ -20,6 +23,7 @@
     "@elastic/elasticsearch": "^8.13.0",
     "@prisma/client": "^5.14.0",
     "@slack/web-api": "^7.0.4",
+    "axios": "^1.7.2",
     "bullmq": "^5.8.1",
     "connect-redis": "^7.1.1",
     "cookie-parser": "^1.4.6",
