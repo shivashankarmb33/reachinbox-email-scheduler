@@ -25,7 +25,7 @@ services:
         value: 20.19.2
       # Vite compiles environment variables at build-time
       - key: VITE_API_URL
-        value: https://reachinbox-backend.onrender.com
+        value: https://reachinbox-backend-5635.onrender.com
 
   # ----------------------------------------------------------------------------
   # 2. BACKEND: Express API + In-Process BullMQ Worker + Bull Board (Free Tier)
@@ -46,7 +46,7 @@ services:
       - key: PORT
         value: 10000
       - key: FRONTEND_URL
-        value: https://reachinbox-frontend.onrender.com
+        value: https://reachinbox-frontend-1ri7.onrender.com
 
       # PostgreSQL Database Connection from Managed Database
       - key: DATABASE_URL
@@ -93,7 +93,7 @@ services:
       - key: GOOGLE_CLIENT_SECRET
         sync: false
       - key: GOOGLE_CALLBACK_URL
-        value: https://reachinbox-backend.onrender.com/auth/google/callback
+        value: https://reachinbox-backend-5635.onrender.com/auth/google/callback
 
       # Slack OAuth 2.0 Credentials (Secrets entered via Render Dashboard)
       - key: SLACK_CLIENT_ID
@@ -101,7 +101,7 @@ services:
       - key: SLACK_CLIENT_SECRET
         sync: false
       - key: SLACK_REDIRECT_URI
-        value: https://reachinbox-backend.onrender.com/api/slack/callback
+        value: https://reachinbox-backend-5635.onrender.com/api/slack/callback
 
       # Elasticsearch URL (Elastic Cloud / Bonsai / External Cluster)
       - key: ELASTICSEARCH_URL

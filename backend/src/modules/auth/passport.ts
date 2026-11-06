@@ -90,10 +90,10 @@ export const configurePassport = () => {
   passport.deserializeUser(async (id: string, done) => {
     try {
       const user = await prisma.user.findUnique({ where: { id } });
-      done(null, user);
+      done(null, user || false);
     } catch (err) {
       logger.error({ msg: 'Error deserializing user from session', id, err });
-      done(null, null);
+      done(null, false);
     }
   });
 };

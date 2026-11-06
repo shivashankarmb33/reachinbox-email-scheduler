@@ -28,6 +28,7 @@ if (env.REDIS_URL || process.env.REDIS_URL) {
   }
 }
 
+// BullMQ connection options (BullMQ requires maxRetriesPerRequest: null)
 export const redisOptions: RedisOptions = {
   host,
   port,
@@ -43,7 +44,12 @@ export const redisOptions: RedisOptions = {
   },
 };
 
-export const redisClient = new Redis(redisOptions);
+// General application Redis client for sessions, rate limiting, and cache with fail-fast retry limit
+export const redisClient = new Redis({
+  ...redisOptions,
+  maxRetriesPerRequest: 5,
+  connectTimeout: 10000,
+});
 
 redisClient.on('connect', () => {
   logger.info('Connected to Redis server');

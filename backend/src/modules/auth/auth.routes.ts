@@ -81,54 +81,64 @@ router.post('/logout', (req: Request, res: Response, next: NextFunction) => {
 
 // Get current authenticated user profile (supports Session and Bearer Token)
 router.get('/me', async (req: Request, res: Response) => {
-  // 1. Check Passport session
-  if (req.isAuthenticated && req.isAuthenticated() && req.user) {
-    const user = req.user as any;
-    return res.status(200).json({
-      success: true,
-      authMethod: 'session',
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        avatar: user.avatar,
-        createdAt: user.createdAt,
-      },
-    });
-  }
+  try {
+    // 1. Check Passport session
+    if (req.isAuthenticated && req.isAuthenticated() && req.user) {
+      const user = req.user as any;
+      return res.status(200).json({
+        success: true,
+        authMethod: 'session',
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          avatar: user.avatar,
+          createdAt: user.createdAt,
+        },
+      });
+    }
 
-  // 2. Check Bearer token in Authorization header
-  const authHeader = req.headers.authorization;
-  if (authHeader && authHeader.startsWith('Bearer ')) {
-    const token = authHeader.slice(7).trim();
-    const verified = verifyAuthToken(token);
-    if (verified) {
-      try {
-        const user = await prisma.user.findUnique({ where: { id: verified.userId } });
-        if (user) {
-          return res.status(200).json({
-            success: true,
-            authMethod: 'token',
-            user: {
-              id: user.id,
-              name: user.name,
-              email: user.email,
-              avatar: user.avatar,
-              createdAt: user.createdAt,
-            },
-          });
+    // 2. Check Bearer token in Authorization header
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      const token = authHeader.slice(7).trim();
+      const verified = verifyAuthToken(token);
+      if (verified) {
+        try {
+          const user = await prisma.user.findUnique({ where: { id: verified.userId } });
+          if (user) {
+            return res.status(200).json({
+              success: true,
+              authMethod: 'token',
+              user: {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                avatar: user.avatar,
+                createdAt: user.createdAt,
+              },
+            });
+          }
+        } catch (err: any) {
+          logger.error({ msg: 'Database error in /me token lookup', error: err.message });
         }
-      } catch (err: any) {
-        logger.error({ msg: 'Database error in /me token lookup', error: err.message });
       }
     }
-  }
 
-  return res.status(401).json({
-    success: false,
-    error: 'Unauthenticated',
-    user: null,
-  });
+    // Explicitly return 401 unauthenticated with user: null when no user session exists
+    return res.status(401).json({
+      success: false,
+      error: 'Unauthenticated',
+      user: null,
+    });
+  } catch (err: any) {
+    logger.error({ msg: 'Unexpected error in /me handler', error: err?.message });
+    return res.status(401).json({
+      success: false,
+      error: 'Unauthenticated',
+      user: null,
+    });
+  }
 });
 
 // Development / Demo login endpoint

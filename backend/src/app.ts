@@ -23,6 +23,9 @@ import { bullBoardRouter } from './bullboard/bullboard.js';
 export const createApp = (): Express => {
   const app = express();
 
+  // Trust first proxy (Render load balancer / Cloudflare) so req.secure and HTTPS cookies work correctly
+  app.set('trust proxy', 1);
+
   // 1. Security Headers
   app.use(
     helmet({
@@ -30,13 +33,28 @@ export const createApp = (): Express => {
     })
   );
 
-  // 2. CORS configuration
+  // 2. CORS configuration (allowing configured Render frontend, local dev, and exact production origin)
+  const allowedOrigins = [
+    env.FRONTEND_URL.replace(/\/+$/, ''),
+    'https://reachinbox-frontend-1ri7.onrender.com',
+    'http://localhost:5173',
+    'http://localhost:3000',
+  ];
+
   app.use(
     cors({
-      origin: env.FRONTEND_URL,
+      origin: (requestOrigin, callback) => {
+        // Allow requests with no origin (e.g. mobile apps, curl, server-to-server)
+        if (!requestOrigin) return callback(null, true);
+        const normalized = requestOrigin.replace(/\/+$/, '');
+        if (allowedOrigins.includes(normalized)) {
+          return callback(null, true);
+        }
+        return callback(null, false);
+      },
       credentials: true,
-      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-      allowedHeaders: ['Content-Type', 'Authorization'],
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
     })
   );
 
@@ -51,17 +69,20 @@ export const createApp = (): Express => {
     prefix: 'reachinbox:sess:',
   });
 
+  const isProduction = env.NODE_ENV === 'production';
+
   app.use(
     session({
       store: redisStore,
       secret: env.SESSION_SECRET,
       resave: false,
       saveUninitialized: false,
+      proxy: isProduction, // Trust reverse proxy on Render for HTTPS cookies
       cookie: {
-        secure: env.NODE_ENV === 'production',
+        secure: isProduction,
         httpOnly: true,
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-        sameSite: env.NODE_ENV === 'production' ? 'none' : 'lax',
+        sameSite: isProduction ? 'none' : 'lax', // 'none' required for cross-site HTTPS between Render frontend and backend
       },
     })
   );
