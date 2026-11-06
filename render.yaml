@@ -1,5 +1,5 @@
 # ==============================================================================
-# ReachInbox Email Scheduler – Official Render Blueprint
+# ReachInbox Email Scheduler – Official Render Blueprint (Free Tier Deployment)
 # Schema Specification: Render Blueprints (render.yaml v1)
 # ==============================================================================
 
@@ -7,7 +7,7 @@ version: "1"
 
 services:
   # ----------------------------------------------------------------------------
-  # 1. FRONTEND: React / Vite Static Site
+  # 1. FRONTEND: React / Vite Static Site (Free Tier)
   # ----------------------------------------------------------------------------
   - type: web
     name: reachinbox-frontend
@@ -26,12 +26,12 @@ services:
         value: https://reachinbox-backend.onrender.com
 
   # ----------------------------------------------------------------------------
-  # 2. BACKEND: Express API + In-Process BullMQ Worker + Bull Board Dashboard
+  # 2. BACKEND: Express API + In-Process BullMQ Worker + Bull Board (Free Tier)
   # ----------------------------------------------------------------------------
   - type: web
     name: reachinbox-backend
     runtime: node
-    plan: starter # Options: 'starter' (always-on, recommended) or 'free'
+    plan: free # Free tier compute (512 MB RAM, spins down on 15 mins of inactivity)
     rootDir: backend
     buildCommand: npm install && npx prisma generate && npm run build && npx prisma migrate deploy
     startCommand: npm start
@@ -110,27 +110,21 @@ services:
         value: 587
 
   # ----------------------------------------------------------------------------
-  # 3. KEY VALUE: Render Managed Key Value Store (Redis-compatible for BullMQ)
+  # 3. KEY VALUE: Render Managed Key Value Store (Free Tier)
   # ----------------------------------------------------------------------------
   - type: keyvalue
     name: reachinbox-redis
-    # Plan Options:
-    # - '256mb' (~$7/mo): Persistent disk storage (Recommended for BullMQ queue durability)
-    # - 'free': Volatile in-memory (resets on restart, for testing/prototypes)
-    plan: 256mb
+    plan: free # Free tier (25 MB RAM, in-memory)
     # noeviction prevents Redis from dropping pending or delayed BullMQ jobs
     maxmemoryPolicy: noeviction
     ipAllowList: [] # Accessible exclusively within Render's private network
 
 # ------------------------------------------------------------------------------
-# 4. DATABASE: Render Managed PostgreSQL Database
+# 4. DATABASE: Render Managed PostgreSQL Database (Free Tier)
 # ------------------------------------------------------------------------------
 databases:
   - name: reachinbox-postgres
     databaseName: reachinbox_email_scheduler
     user: reachinbox_user
-    # Plan Options:
-    # - 'basic-256mb' (~$7/mo): Always-on, persistent storage
-    # - 'free': 30-day trial instance (resets after 30 days)
-    plan: basic-256mb
+    plan: free # Free tier (256 MB RAM, 1 GB storage, 30-day trial)
     postgresMajorVersion: '16'
