@@ -1,0 +1,36 @@
+{
+  "name": "reachinbox-email-scheduler",
+  "version": "1.0.0",
+  "description": "ReachInbox - Full-Stack Email Job Scheduler with BullMQ, Redis, PostgreSQL, and Elasticsearch",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "dev:backend": "npm run dev --workspace=backend",
+    "dev:worker": "npm run dev:worker --workspace=backend",
+    "dev:frontend": "npm run dev --workspace=frontend",
+    "build:backend": "npm run build --workspace=backend",
+    "build:frontend": "npm run build --workspace=frontend",
+    "build": "npm run build:backend && npm run build:frontend",
+    "test:backend": "npm run test --workspace=backend",
+    "test:frontend": "npm run test --workspace=frontend",
+    "test": "npm run test:backend && npm run test:frontend",
+    "infra:up": "docker compose -f infrastructure/docker-compose.yml up -d",
+    "infra:down": "docker compose -f infrastructure/docker-compose.yml down",
+    "infra:logs": "docker compose -f infrastructure/docker-compose.yml logs -f"
+  },
+  "keywords": [
+    "email-scheduler",
+    "bullmq",
+    "redis",
+    "postgresql",
+    "elasticsearch",
+    "react",
+    "typescript"
+  ],
+  "author": "",
+  "license": "ISC"
+}
+
